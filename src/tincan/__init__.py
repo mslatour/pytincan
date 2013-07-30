@@ -19,8 +19,8 @@ class TinCan(object):
 		self._secret = secret
 		self._endpoint = endpoint
 		self.logger = logger
-		
-	def submitStatement(self, jsonObject):	  
+
+	def submitStatement(self, jsonObject):
 		##Attempts to submit a single statement
 		try:
 			##Validates that the verb is valid
@@ -31,7 +31,7 @@ class TinCan(object):
 				            data=json.dumps(jsonObject),
 				            auth=HTTPBasicAuth(self._userName,self._secret),
 				            headers={"Content-Type":"application/json"})
-			
+
 		except IOError as e:
 			if self.logger is not None:
 				self.logger.error(e)
@@ -39,7 +39,7 @@ class TinCan(object):
 
 	def submitStatementList(self, jsonObjectList):
 		##Submits a list of Statements
-		for statement in jsonObjectList:	
+		for statement in jsonObjectList:
 			try:
 				##Validates that the verb is valid
 				if(not dataValidation.validateVerb(statement['verb'])):
@@ -56,7 +56,7 @@ class TinCan(object):
 				else:
 					print e
 
-		
+
 	def getStatementbyID(self, ID):
 		##Attempts to retrieve a statement by its ID
 		try:
@@ -64,7 +64,7 @@ class TinCan(object):
 			url = self._endpoint+"?statementId="+ID
 			resp = requests.get(url,
 								auth=HTTPBasicAuth(self._userName,self._secret))
-			return resp.json
+			return resp.json()
 		except IOError as e:
 			if self.logger is not None:
 				self.logger.error(e)
@@ -74,7 +74,7 @@ class TinCan(object):
 			resp = requests.get(self._endpoint,
 							auth=HTTPBasicAuth(self._userName,self._secret),
 							headers={"Content-Type":"application/json"})
-			return resp.json
+			return resp.json()
 		except IOError as e:
 			if self.logger is not None:
 				self.logger.error(e)
@@ -106,14 +106,14 @@ class TinCan(object):
 		##Encodes the query object into a query string
 		url = self._endpoint +"?"+ urllib.urlencode(queryObject)
 		##If the URL Length exceeds max URL length then query using post
-		if (len(url)> 2048):	
+		if (len(url)> 2048):
 			resp = requests.post(self._endpoint,
 							    data=queryObject,
 							    auth=HTTPBasicAuth(self._userName,self._secret))
-			return resp.json
+			return resp.json()
 		else:
 			resp = requests.get(url,
 						    auth=HTTPBasicAuth(self._userName,self._secret))
-			return resp.json
-		
+			return resp.json()
+
 
