@@ -80,45 +80,33 @@ class TinCan(object):
       if self.logger is not None:
         self.logger.error(e)
 
-  def getFilteredStatements(self, kwargsdict):
-      return getFilteredStatements(**kwargsdict)
-
-  def getFilteredStatements(self,verb=None,_object=None,_registration=None,_context=None,_actor=None,_since=None,_until=None,_limit=None,_authoritative=None,_sparse=None,_instructor=None):
+  def getFilteredStatements(self, inputDict):
     queryObject ={}
     ##Builds the statement query object
-    if(verb != None):
-      queryObject['verb'] = verb
-    if(object != None):
-      queryObject['object'] = json.dumps(object)
-    if(registration != None):
-      queryObject['registration'] = registration
-    if(context != None):
-      queryObject['context'] = context
-    if(actor != None):
-      queryObject['actor'] = json.dumps(actor)
-    if(since != None):
-      queryObject['since'] = since
-    if(until != None):
-      queryObject['until'] = until
-    if(limit != None):
-      queryObject['limit'] = limit
-    if(authoritative != None):
-      queryObject['authoritative'] = authoritative
-    if(sparse != None):
-      queryObject['sparse'] = sparse
-    if(instructor != None):
-      queryObject['instructor'] = json.dumps(instructor)
+    for key in ['actor', 'verb', 'object']:
+        if key in inputDict:
+            queryObject[key] = json.dumps(inputDict[key])
+
+    for key in ['result', 'context', 'timestamp',
+            'stored', 'authority', 'version', 'attachments']:
+        if key in inputDict:
+            queryObject[key] = inputDict[key]
+
     ##Encodes the query object into a query string
     url = self._endpoint +"?"+ urllib.urlencode(queryObject)
     ##If the URL Length exceeds max URL length then query using post
     if (len(url)> 2048):
       resp = requests.post(self._endpoint,
                            data=queryObject,
-                           auth=HTTPBasicAuth(self._userName,self._secret))
+                           auth=HTTPBasicAuth(self._userName,self._secret),
+                           headers={"Content-Type":"application/json",
+                                     VERSIONHEADER:VERSION})
       return resp.json()
     else:
       resp = requests.get(url,
-                auth=HTTPBasicAuth(self._userName,self._secret))
+                auth=HTTPBasicAuth(self._userName,self._secret),
+                headers={"Content-Type":"application/json",
+                         VERSIONHEADER:VERSION})
       return resp.json()
 
 
