@@ -87,7 +87,6 @@ class TinCan(object):
                 'stored', 'authority', 'version', 'attachments']:
         if key in inputDict:
             queryObject[key] = inputDict[key]
-    print queryObject
 
     ##Encodes the query object into a query string
     url = self._endpoint +"?"+ urllib.urlencode(queryObject)
