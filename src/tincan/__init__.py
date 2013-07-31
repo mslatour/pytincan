@@ -54,7 +54,7 @@ class TinCan(object):
           print e
 
 
-  def getStatementbyID(self, ID):
+  def getStatementByID(self, ID):
     ##Attempts to retrieve a statement by its ID
     try:
 
@@ -82,15 +82,12 @@ class TinCan(object):
 
   def getFilteredStatements(self, inputDict):
     queryObject ={}
-    ##Builds the statement query object
-    for key in ['actor', 'verb', 'object']:
-        if key in inputDict:
-            queryObject[key] = json.dumps(inputDict[key])
-
-    for key in ['result', 'context', 'timestamp',
-            'stored', 'authority', 'version', 'attachments']:
+    for key in ['result', 'agent', 'context', 'timestamp',
+                'verb', 'object',
+                'stored', 'authority', 'version', 'attachments']:
         if key in inputDict:
             queryObject[key] = inputDict[key]
+    print queryObject
 
     ##Encodes the query object into a query string
     url = self._endpoint +"?"+ urllib.urlencode(queryObject)
